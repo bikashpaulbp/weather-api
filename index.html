@@ -22,20 +22,64 @@
     <div class="container">
         <form class="col-md-6 m-auto py-5">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <input id="city-name" type="text" class="form-control" placeholder="Enter a location for Weather ...">
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-danger">Search</button>
+                    <button id="search" type="button" class="btn btn-danger">Search</button>
                 </div>
             </div>
         </form>
         <div class="weather-status text-white text-center">
-            <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
-            <h1>Dhaka</h1>
-            <h3><span>38.06</span>&deg;C</h3>
-            <h1 class="lead">Clouds</h1>
+            <img id="pic" src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <h1 id="city">Dhaka</h1>
+            <h3><span id="temp-data">38.06</span>&deg;C</h3>
+            <h1 id="cloud-status" class="lead">Clouds</h1>
         </div>
     </div>
 
+    <script>
+        document.getElementById("search").addEventListener("click", function () {
+
+            // get and set city name
+            const getCityName = document.getElementById("city-name").value;
+            const setCityName = 'http://api.openweathermap.org/data/2.5/weather?q=' + getCityName + '&appid=ef1a0dac8450365de71d775237242a6d';
+
+            fetch(setCityName)
+                .then(res => res.json())
+                .then(data => {
+                    displayData(data);
+                })
+
+                
+            // get data from api
+
+            function displayData(data) {
+                
+                // get and set temp data
+
+                const getData = data.main;
+                const getTempData = getData.feels_like;
+                const setData = document.getElementById("temp-data");
+                setData.innerText = Math.round(parseFloat(getTempData + -272.15));
+                const getCloudStatus = data.weather[0].main;
+
+                // get and set cloud status
+
+                const setCloudData = document.getElementById("cloud-status");
+                setCloudData.innerText = getCloudStatus;
+                
+                // set city name
+
+                document.getElementById("city").innerText = getCityName;
+
+                // set icon
+
+                const tempIcon = 'https://openweathermap.org/img/w/' + data.weather[0].icon + '.png'
+                document.getElementById("pic").src = tempIcon;
+            }
+        })
+
+        
+    </script>
 </body>
 
 </html>
